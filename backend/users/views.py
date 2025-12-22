@@ -5,7 +5,11 @@ from django.shortcuts import get_object_or_404
 
 from .models import UserProfile
 from .serializers import UserProfileSerializer
-from .pagination import UserPagination
+from .pagination import (
+    UserPagination,
+    UserLimitOffsetPagination,
+    UserCursorPagination
+)
 
 
 @api_view(['GET'])
@@ -64,3 +68,19 @@ def user_detail(request, pk):
             {"message": "User deleted successfully"},
             status=status.HTTP_204_NO_CONTENT
         )
+
+@api_view(['GET'])
+def user_list_limit_offset(request):
+    users = UserProfile.objects.all()
+    paginator = UserLimitOffsetPagination()
+    paginated_users = paginator.paginate_queryset(users, request)
+    serializer = UserProfileSerializer(paginated_users, many=True)
+    return paginator.get_paginated_response(serializer.data)
+
+@api_view(['GET'])
+def user_list_cursor(request):
+    users = UserProfile.objects.all()
+    paginator = UserCursorPagination()
+    paginated_users = paginator.paginate_queryset(users, request)
+    serializer = UserProfileSerializer(paginated_users, many=True)
+    return paginator.get_paginated_response(serializer.data)
