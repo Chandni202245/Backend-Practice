@@ -19,4 +19,4 @@ class UserLimitOffsetPagination(LimitOffsetPagination):
 # Cursor Pagination
 class UserCursorPagination(CursorPagination):
     page_size=2
-    ordering='-created_at'
+    ordering='-created_a'
